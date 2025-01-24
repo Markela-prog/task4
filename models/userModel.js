@@ -28,7 +28,7 @@ const createUser = async (name, email, password) => {
         );
         return result.rows[0];
     } catch (error) {
-        throw new Error('Failed to create user');
+        throw error;
     }
 };
 
