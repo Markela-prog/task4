@@ -42,7 +42,7 @@ const registerUser = async (req, res) => {
         const token = generateToken(newUser.id);
         generateResponse(res, token, newUser, 'User registered successfully', 201);
     } catch (error) {
-        const message = error.code === '23505' ? 
+        const message = error.code === '23505' && error.detail?.includes("email") ? 
             'Email already exists. Please use a different email.' : 
             'Failed to register user.';
         handleError(res, message, error.code === '23505' ? 400 : 500);
