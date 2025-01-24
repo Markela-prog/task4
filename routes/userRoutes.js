@@ -1,12 +1,13 @@
 const express = require('express');
 const { getUsers, registerUser, loginUser, updateUserStatusController, deleteUser } = require('../controllers/userController');
 const authenticateUser = require('../middleware/authenticateUser');
+const { verifyAuth } = require('../controllers/authController');
 
 const router = express.Router();
 
-
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.post('/auth/verify', verifyAuth);
 
 router.put('/user/:id/block', authenticateUser, (req, res, next) => {
     req.body.isActive = false;
