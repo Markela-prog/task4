@@ -43,24 +43,29 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await userModel.getUserByEmail(email);
-        if (!user) return handleError(res, 'User not found.', 404);
 
-        if (user.status === 'blocked'){
+        if (!user) {
+            return handleError(res, 'Email does not exist. Please check your input.', 404);
+        }
+
+        if (user.status === 'blocked') {
             return handleError(res, 'Your account is blocked. Please contact support.', 403);
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) return handleError(res, 'Invalid credentials.', 401);
+        if (!isPasswordValid) {
+            return handleError(res, 'Incorrect password. Please try again.', 401);
+        }
 
         await userModel.updateLastLogin(user.id);
 
         const token = generateToken(user.id);
         generateResponse(res, token, user, 'Login successful');
-
     } catch (error) {
-        handleError(res, 'Failed to login.')
+        handleError(res, 'Failed to process login request. Please try again later.', 500);
     }
 };
+
 
 const updateUserStatusController = async (req, res) => {
     const { userIds, isActive } = req.body;
