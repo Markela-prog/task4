@@ -34,7 +34,7 @@ const registerUser = async (req, res) => {
         generateResponse(res, token, newUser, 'User registered successfully', 201);
     } catch (error) {
         if (error.code === '23505') {
-            res.status(400).json({ message: 'Email already exists. Please use a different email.' });
+            handleError(res, 'Email already exists. Please use a different email', 400)
         } else {
             handleError(res, 'Failed to register user.');
         }
@@ -77,9 +77,7 @@ const updateUserStatusController = async (req, res) => {
         const ids = Array.isArray(userIds) ? userIds : [req.params.id];
         await userModel.updateUserStatus(ids, isActive);
 
-        res.status(200).json({
-            message: `User(s) updated successfully to ${isActive ? 'active' : 'blocked'}.`,
-        });
+        handleError(res, `User(s) updated successfully to ${isActive ? 'active' : 'blocked'}.`, 200)
     } catch (error) {
         handleError(res, `Failed to update user(s) to status: ${isActive ? 'active' : 'blocked'}.`);
     }
@@ -92,7 +90,7 @@ const deleteUser = async (req, res) => {
         const ids = Array.isArray(userIds) ? userIds : [req.params.id];
         await userModel.deleteUsers(ids);
 
-        res.status(200).json({ message: 'User(s) deleted successfully.' });
+        handleError(res, 'User(s) deleted successfully.', 200);
     } catch (error) {
         handleError(res, 'Failed to delete user(s).');
     }
