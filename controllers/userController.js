@@ -31,13 +31,16 @@ const registerUser = async (req, res) => {
         const newUser = await userModel.createUser(name, email, hashedPassword);
 
         const token = generateToken(newUser.id);
-        
         generateResponse(res, token, newUser, 'User registered successfully', 201);
     } catch (error) {
-        handleError(res, 'Failed to register user.');
+        if (error.code === '23505') {
+            res.status(400).json({ message: 'Email already exists. Please use a different email.' });
+        } else {
+            handleError(res, 'Failed to register user.');
+        }
     }
-
 };
+
 
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
