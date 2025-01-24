@@ -33,34 +33,6 @@ app.post('/api/auth/verify', (req, res) => {
   }
 });
 
-router.get("/auth/me", async (req, res) => {
-    const token = req.headers.authorization?.split(" ")[1];
-  
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-  
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await getUserByEmail(decoded.email); // Use email from decoded token
-  
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      // Return only the necessary user details (e.g., name, email, status)
-      res.status(200).json({
-        name: user.name,
-        email: user.email,
-        status: user.status,
-      });
-    } catch (error) {
-      console.error("Error in /auth/me:", error);
-      res.status(500).json({ message: "Failed to retrieve user information" });
-    }
-  });
-  
-
 app.get('/', (req, res) => {
   res.send('Welcome to the Backend API');
 });
